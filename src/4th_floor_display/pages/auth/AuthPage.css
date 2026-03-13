@@ -1,0 +1,57 @@
+/* 1. Container chính của trang login/register */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+        url('https://img.pikbest.com/ai/illus_our/20230414/109d266ed0b1a0a5463b7ac23c80df53.jpg!w700wp') no-repeat center center/cover;
+}
+
+/* 2. Card chứa form login */
+.auth-card {
+    background: rgba(20, 20, 20, 0.85);
+    backdrop-filter: blur(10px);
+    padding: 40px;
+    width: 100%;
+    max-width: 450px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    text-align: center;
+}
+
+/* 3. Tiêu đề của form */
+.auth-title {
+    color: #FFB400 !important;
+    font-family: 'Segoe UI', sans-serif;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 30px !important;
+}
+
+/* 4. Style cho input */
+.modern-input {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: none !important;
+    color: white !important;
+    padding: 12px !important;
+}
+
+/* 5. Placeholder của input */
+.modern-input::placeholder { color: rgba(255,255,255,0.5); }
+
+/* 6. Nút đăng nhập màu vàng */
+.gold-button {
+    background: none !important;
+    border: 2px solid #FFB400 !important;
+    color: #FFB400 !important;
+    height: 50px !important;
+    border-radius: 25px !important;
+    transition: all 0.3s !important;
+}
+
+/* 3. Hiệu ứng Hover vào nút */
+.gold-button:hover {
+    background: #FFB400 !important;
+    color: black !important;
+}
