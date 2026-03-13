@@ -28,7 +28,7 @@ export const ImageUpload: React.FC<Props> = ({ value, onChange }) => {
         if (info.file.originFileObj) {
             getBase64(info.file.originFileObj as RcFile, (url) => {
                 setLoading(false);
-                if (onChange) onChange(url); // Cập nhật chuỗi Base64 vào Form
+                if (onChange) onChange(url);
             });
         }
     };

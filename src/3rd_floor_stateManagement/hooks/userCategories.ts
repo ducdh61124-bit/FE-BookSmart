@@ -1,24 +1,15 @@
-import { useState, useCallback } from 'react';
-import { categoryService } from '../../2nd_floor_professionalSkill/services/category.service';
-import { Category } from '../../5th_floor_core/core/types/category.type';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { setCategories } from '../redux/slices/categorySlice';
+import { categoryService } from '../../2nd_floor_professionalSkill/services/categoryService';
 
 export const useCategories = () => {
-    // Kho chứa dữ liệu nội bộ của Hook
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [loading, setLoading] = useState(false);
+    const dispatch = useAppDispatch();
+    const { categories } = useAppSelector((state) => state.category);
 
-    // Hàm lấy danh sách sách
-    const fetchCategories = useCallback(async () => {
-        setLoading(true);
-        try {
-            const data = await categoryService.getAll();
-            setCategories(data);
-        } catch (error) {
-            console.error("Lỗi lấy danh mục", error);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
+    const fetchCategories = async () => {
+        const data = await categoryService.getAll();
+        dispatch(setCategories(data));
+    };
 
-    return { categories, loading, fetchCategories };
+    return { categories, fetchCategories };
 };

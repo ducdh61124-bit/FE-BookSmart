@@ -77,6 +77,7 @@ export const BookTable: React.FC<Props> = ({ data, loading, onEdit, onDelete }) 
             dataIndex: 'stock',
             key: 'stock',
             align: 'center',
+            sorter: (a, b) => a.price - b.price,
             render: (s) => (
                 <Tag color={s > 20 ? 'green' : s > 0 ? 'orange' : 'volcano'} className="rounded-md px-2 font-medium">
                     {s || 0} cuốn

@@ -14,7 +14,6 @@ const AuthPage: React.FC = () => {
     const { loginUser, loading } = useAuth();
     const [form] = Form.useForm();
 
-    // useEffect lấy email đã lưu (Remember Me)
     useEffect(() => {
         const savedEmail = localStorage.getItem('rememberedEmail');
         if (savedEmail) {
@@ -22,21 +21,23 @@ const AuthPage: React.FC = () => {
         }
     }, [form]);
 
-    // Hàm xử lý submit form
     const onFinish = async (values: any) => {
         try {
             const success = await loginUser(values);
-            if (success) {
-                if (values.remember) {
-                    localStorage.setItem('rememberedEmail', values.username);
-                } else {
-                    localStorage.removeItem('rememberedEmail'); // Xóa nếu không tích
-                }
+            console.log("Đăng nhập có thành công không?", success);
 
-                message.success('Đăng nhập thành công!');
-                navigate('/books');
+            if (success) {
+                message.success('Đăng nhập thành công! Đang chuyển hướng...');
+                // Đợi 0.5 giây cho Redux kịp cập nhật rồi mới chuyển trang
+                setTimeout(() => {
+                    navigate('/books');
+                }, 500);
+            } else {
+                message.error('Sai tài khoản hoặc mật khẩu!');
             }
-        } catch (err: any) { message.error(err.message); }
+        } catch (err: any) {
+            message.error('Máy chủ không phản hồi!');
+        }
     };
 
     return (
@@ -48,9 +49,9 @@ const AuthPage: React.FC = () => {
                     form={form}
                     onFinish={onFinish}
                     layout="vertical"
-                    initialValues={{ remember: false }} // Mặc định không tích Remember Me
+                    initialValues={{ remember: false }}
                 >
-                    <Form.Item name="username" rules={[{ required: true, message: 'Nhập E-mail!' }]}>
+                    <Form.Item name="username" rules={[{ required: true, message: 'Nhập E-mail/Username!' }]}>
                         <Input className="modern-input" prefix={<UserOutlined style={{color: '#FFB400'}}/>} placeholder="Enter your E-mail" />
                     </Form.Item>
 
@@ -58,36 +59,26 @@ const AuthPage: React.FC = () => {
                         <Input.Password className="modern-input" prefix={<LockOutlined style={{color: '#FFB400'}}/>} placeholder="Enter Password" />
                     </Form.Item>
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '25px', alignItems: 'center' }}>
-                        {/* FIX 1: Wrap Checkbox vào Form.Item để lấy được giá trị true/false */}
+                    <div className="flex justify-between items-center mb-6">
                         <Form.Item name="remember" valuePropName="checked" noStyle>
-                            <Checkbox style={{ color: '#ccc' }}>Remember Me</Checkbox>
+                            <Checkbox className="text-gray-300">Remember Me</Checkbox>
                         </Form.Item>
-
-                        {/* FIX 2: Thêm sự kiện onClick cho Forgot Password */}
-                        <Text
-                            style={{ color: '#FFB400', cursor: 'pointer' }}
-                            onClick={() => navigate('/forgot-password')}
-                        >
+                        <Text className="text-yellow-500 cursor-pointer hover:underline" onClick={() => navigate('/forgot-password')}>
                             Forgot Password?
                         </Text>
                     </div>
 
                     <SocialLogin />
 
-                    <Form.Item style={{ marginBottom: 0 }}>
-                        <CustomButton className="gold-button" htmlType="submit" loading={loading} block icon={<ArrowRightOutlined />}>
+                    <Form.Item className="mt-6">
+                        <CustomButton className="gold-button w-full" htmlType="submit" loading={loading} icon={<ArrowRightOutlined />}>
                             SIGN IN
                         </CustomButton>
                     </Form.Item>
 
-                    {/* FIX 3: Thêm sự kiện onClick cho Nút Đăng ký */}
-                    <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                        <Text style={{ color: '#ccc' }}>Chưa có tài khoản? </Text>
-                        <Text
-                            style={{ color: '#FFB400', cursor: 'pointer', fontWeight: 'bold' }}
-                            onClick={() => navigate('/register')}
-                        >
+                    <div className="text-center mt-5">
+                        <Text className="text-gray-400">Chưa có tài khoản? </Text>
+                        <Text className="text-yellow-500 cursor-pointer font-bold hover:underline" onClick={() => navigate('/register')}>
                             Đăng ký ngay
                         </Text>
                     </div>

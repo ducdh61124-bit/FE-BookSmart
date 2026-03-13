@@ -4,11 +4,11 @@ import AppRoutes from './4th_floor_display/url/AppRoutes';
 import './index.css';
 
 const App: React.FC = () => {
-  return (
-    <BrowserRouter>
-      <AppRoutes />
-    </BrowserRouter>
-  );
+    return (
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+    );
 };
 
 export default App;

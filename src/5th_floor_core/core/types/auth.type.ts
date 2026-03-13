@@ -1,11 +1,11 @@
 import type { User } from './user.type';
 
 export interface LoginRequest {
-  username: string;
-  password: string;
+    username: string;
+    password: string;
 }
 
 export interface LoginResponse {
-  accessToken: string;
-  user: User;
+    accessToken: string;
+    user: User;
 }

@@ -1,30 +1,36 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuthStore } from '../../3rd_floor_stateManagement/store/authStore';
+import { useAppSelector } from '../../3rd_floor_stateManagement/redux/hooks';
 
-import AuthLayout from '../layouts/AuthLayout';
-import MainLayout from '../layouts/MainLayout';
-import AuthPage from '../pages/auth/AuthPage';
-import RegisterPage from '../pages/auth/RegisterPage';
-import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
-import BookPage from '../pages/books/BookPage';
+import AuthLayout from '../../4th_floor_display/layouts/AuthLayout';
+import MainLayout from '../../4th_floor_display/layouts/MainLayout';
+import AuthPage from '../../4th_floor_display/pages/auth/AuthPage';
+import RegisterPage from '../../4th_floor_display/pages/auth/RegisterPage';
+import ForgotPasswordPage from '../../4th_floor_display/pages/auth/ForgotPasswordPage';
+import BookPage from '../../4th_floor_display/pages/books/BookPage';
 
+// HÀM BẢO VỆ ROUTE: Nếu chưa login thì đá văng ra /login
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-    if (!isAuthenticated) return <Navigate to="/login" replace />;
+    const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+
+    // Nếu không có token hoặc chưa login, bắt về login ngay
+    if (!isAuthenticated) {
+        return <Navigate to="/login" replace />;
+    }
     return <>{children}</>;
 };
 
 const AppRoutes: React.FC = () => {
     return (
         <Routes>
-            {/* Trang Login */}
+            {/* NHÓM 1: Các trang dành cho khách (chưa login) */}
             <Route element={<AuthLayout />}>
                 <Route path="/login" element={<AuthPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             </Route>
 
+            {/* NHÓM 2: Các trang yêu cầu Đăng nhập (Dùng MainLayout) */}
             <Route
                 path="/"
                 element={
@@ -33,12 +39,13 @@ const AppRoutes: React.FC = () => {
                     </ProtectedRoute>
                 }
             >
-                {/* Mặc định vào cổng thì văng ra trang books */}
+                {/* Vào / thì tự động nhảy sang /books */}
                 <Route index element={<Navigate to="/books" replace />} />
                 <Route path="books" element={<BookPage />} />
+                {/* Sau này thêm Quản lý User, Category... ở đây */}
             </Route>
 
-            {/* Bắt link tào lao */}
+            {/* Bắt link sai: Quay về trang chủ */}
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
     );

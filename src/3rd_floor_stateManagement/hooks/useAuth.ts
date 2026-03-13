@@ -1,65 +1,34 @@
 import { useState } from 'react';
+import { useAppDispatch } from '../redux/hooks';
+import { setCredentials } from '../redux/slices/authSlice';
 import { authService } from '../../2nd_floor_professionalSkill/services/authService';
-import type { LoginRequest } from '../../5th_floor_core/core/types/auth.type';
-import type { User } from '../../5th_floor_core/core/types/user.type';
-import { useAuthStore } from '../store/authStore';
 
 export const useAuth = () => {
-    // Lấy thông tin user từ localStorage nếu đã đăng nhập từ trước
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+    const dispatch = useAppDispatch();
 
-    const setAuth = useAuthStore((state) => state.setAuth);
-    const logoutFromStore = useAuthStore((state) => state.logout);
-
-    // Xử lý Đăng nhập
-    const loginUser = async (credentials: LoginRequest) => {
+    const loginUser = async (values: any) => {
         setLoading(true);
-        setError(null);
         try {
-            const response: any = await authService.login(credentials);
-            const userData = response.data || response;
-            const token = response.accessToken || 'dummy-token';
+            const response = await authService.login(values);
+            console.log("Dữ liệu thực tế từ Backend:", response);
+            const token = response?.token || response?.data?.token || response?.accessToken;
+            const userData = response?.user || response?.data?.user || response;
 
-            if (userData) {
-                setAuth(userData, token);
-                console.log("Đăng nhập thành công, User:", userData.name);
+            if (token) {
+                dispatch(setCredentials({ user: userData }));
+                localStorage.setItem('token', token);
+                localStorage.setItem('user', JSON.stringify(userData));
                 return true;
             }
             return false;
-        } catch (err: any) {
-            setError(err.message || 'Tài khoản hoặc mật khẩu không đúng!');
+        } catch (error) {
+            console.error("Lỗi API:", error);
             return false;
         } finally {
             setLoading(false);
         }
     };
 
-    // Xử lý Đăng ký nhân viên mới
-    const registerUser = async (userData: Omit<User, 'id' | 'isActive'>) => {
-        setLoading(true);
-        setError(null);
-        try {
-            await authService.register(userData);
-            return true;
-        } catch (err: any) {
-            setError(err.message || 'Đăng ký thất bại!');
-            return false;
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    // Xử lý Đăng xuất
-    const logoutUser = () => {
-        logoutFromStore();
-    };
-
-    return {
-        loading,
-        error,
-        loginUser,
-        registerUser,
-        logoutUser,
-    };
+    return { loginUser, loading };
 };
