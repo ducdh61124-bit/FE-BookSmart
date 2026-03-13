@@ -38,21 +38,14 @@ export const ImageUpload: React.FC<Props> = ({ value, onChange }) => {
             listType="picture-card"
             className="avatar-uploader"
             showUploadList={false}
-            beforeUpload={(file) => {
-                const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-                if (!isJpgOrPng) message.error('Vui lòng upload file JPG/PNG thôi!');
-                const isLt2M = file.size / 1024 / 1024 < 2;
-                if (!isLt2M) message.error('Ảnh phải nhỏ hơn 2MB nhé!');
-                return isJpgOrPng && isLt2M;
-            }}
             onChange={handleChange}
         >
         {value ? (
-            <img src={value} alt="cover" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
+            <img src={value} alt="cover" className="w-full h-full object-cover rounded-lg p-1" />
         ) : (
-            <div>
-                {loading ? <LoadingOutlined /> : <PlusOutlined />}
-                <div style={{ marginTop: 8 }}>Ảnh bìa</div>
+            <div className="flex flex-col items-center">
+                {loading ? <LoadingOutlined className="text-blue-500" /> : <PlusOutlined className="text-gray-400 text-lg" />}
+                <div className="mt-2 text-gray-500 font-medium">Ảnh bìa</div>
             </div>
         )}
         </Upload>

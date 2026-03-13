@@ -23,59 +23,47 @@ export const BookFormModal: React.FC<Props> = ({ open, editingBook, onCancel, on
 
     return (
         <Modal
-            title={editingBook ? "📚 Chỉnh sửa thông tin sách" : "Thêm sách mới vào kho"}
+            title={<span className="text-lg font-bold text-blue-600">📚 Quản lý thông tin sách</span>}
             open={open}
             onOk={() => form.submit()}
             onCancel={onCancel}
             confirmLoading={loading}
-            width={600}
+            width={650}
+            className="rounded-2xl"
             okText="Lưu dữ liệu"
-            cancelText="Đóng"
+            cancelText="Hủy bỏ"
             centered
         >
-        <Divider style={{ marginTop: '10px' }} />
-        <Form form={form} layout="vertical" onFinish={onSave} initialValues={{ stock: 1, price: 1000 }}>
-        <Row gutter={24}>
-            {/* Cột trái: Upload ảnh */}
-            <Col span={8}>
-                <Form.Item
-                    name="image"
-                    label="Ảnh bìa"
-                    rules={[{ required: true, message: 'Thiếu ảnh bìa!' }]}
-                >
-                <ImageUpload />
-                </Form.Item>
-            </Col>
-
-            {/* Cột phải: Thông tin chữ */}
-            <Col span={16}>
-                <Form.Item name="title" label="Tên cuốn sách" rules={[{ required: true, message: 'Tên sách không được để trống!' }]}>
-                    <Input placeholder="Nhập tên sách..." />
-                </Form.Item>
-
-                <Form.Item name="author" label="Tác giả" rules={[{ required: true, message: 'Ai là tác giả thế ông?' }]}>
-                    <Input placeholder="Nhập tên tác giả..." />
-                </Form.Item>
-            </Col>
-        </Row>
-
-        <Row gutter={16}>
-            <Col span={12}>
-                <Form.Item name="price" label="Giá bán (VNĐ)" rules={[{ required: true }]}>
-                    <InputNumber
-                        style={{ width: '100%' }}
-                        formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                        parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
-                    />
-                </Form.Item>
-            </Col>
-            <Col span={12}>
-                <Form.Item name="stock" label="Số lượng trong kho" rules={[{ required: true }]}>
-                    <InputNumber min={0} style={{ width: '100%' }} />
-                </Form.Item>
-            </Col>
-        </Row>
-        </Form>
+            <Divider className="my-4" />
+            <Form form={form} layout="vertical" onFinish={onSave}>
+                <Row gutter={24}>
+                    <Col span={8} className="flex flex-col items-center">
+                        <Form.Item name="image" label={<span className="font-semibold">Ảnh bìa</span>} rules={[{ required: true }]}>
+                            <ImageUpload />
+                        </Form.Item>
+                    </Col>
+                    <Col span={16}>
+                        <Form.Item name="title" label={<span className="font-semibold">Tên cuốn sách</span>} rules={[{ required: true }]}>
+                            <Input placeholder="Ví dụ: Đắc Nhân Tâm..." className="h-10 rounded-md" />
+                        </Form.Item>
+                        <Form.Item name="author" label={<span className="font-semibold">Tác giả</span>} rules={[{ required: true }]}>
+                            <Input placeholder="Nhập tên tác giả..." className="h-10 rounded-md" />
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Row gutter={16}>
+                    <Col span={12}>
+                        <Form.Item name="price" label={<span className="font-semibold">Giá bán (VNĐ)</span>}>
+                            <InputNumber className="w-full h-10 leading-10 rounded-md" min={0} />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item name="stock" label={<span className="font-semibold">Tồn kho</span>}>
+                            <InputNumber className="w-full h-10 leading-10 rounded-md" min={0} />
+                        </Form.Item>
+                    </Col>
+                </Row>
+            </Form>
         </Modal>
     );
-};
+}

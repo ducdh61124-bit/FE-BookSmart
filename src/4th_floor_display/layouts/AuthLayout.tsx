@@ -13,10 +13,10 @@ const AuthLayout: React.FC = () => {
         return <Navigate to="/books" replace />;
     }
 
-    // 3.Nếu chưa đăng nhập → hiển thị layout cho trang auth
+    // 3. Nếu chưa đăng nhập → hiển thị layout cho trang auth
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center p-4">
-        <Outlet />
+        <div className="min-h-screen w-full bg-slate-50">
+            <Outlet />
         </div>
     );
 };

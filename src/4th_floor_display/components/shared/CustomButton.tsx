@@ -1,18 +1,13 @@
 import { Button, type ButtonProps } from 'antd';
 import React from 'react';
 
-export const CustomButton: React.FC<ButtonProps> = ({ children, ...props }) => {
+export const CustomButton: React.FC<ButtonProps> = ({ children, className, ...props }) => {
     return (
         <Button
             {...props}
-            style={{
-                borderRadius: '25px',
-                height: '45px',
-                fontWeight: 'bold',
-                ...props.style
-            }}
+            className={`rounded-full h-11 font-bold shadow-sm transition-all active:scale-95 ${className || ''}`}
         >
-        {children}
+            {children}
         </Button>
     );
 };
