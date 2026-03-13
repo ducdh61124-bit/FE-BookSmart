@@ -1,73 +1,80 @@
-# React + TypeScript + Vite
+# Project Book Management Tuần 2 (React + TypeScript + Ant Design + TailwindCSS)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Tài liệu này tổng hợp rõ ràng những gì đã học và đã làm trong project, các lỗi thường gặp khi làm bài, và cách khắc phục.
 
-Currently, two official plugins are available:
+## Cấu trúc 5 tầng: 
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- src/1st_floor_dataAccess: Truy cập dữ liệu qua API, chỉ quan tâm lấy dữ liệu về hoặc gửi dữ liệu thô đi.
+- src/2nd_floor_professionalSkill: Chuyên nhào nặn dữ liệu. VD: Backend gửi 1 số lượng dữ liệu, tầng này sẽ kiểm tra lại xem user có quyền làm việc này không trước khi vứt lên giao diện.
+- src/3rd_floor_stateManagement: Nơi lưu trữ bộ nhớ ứng dụng.
+- src/4th_floor_display: Nhận dữ liệu đã được xử lý và hiển thi ra màn hình.
+- src/5th_floor_core: Chứa các công cụ, kiểu dữ liệu, hằng số,.. được xài ở 4 tầng 
 
-## React Compiler
+## Chức năng:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Đăng nhập, đăng ký.
+- Xem, thêm, sửa, xóa sách.
+- Tìm kiếm theo tên sách.
+- Tìm kiếm sách theo tác giả, thể loại.
+- Sắp xếp sách theo tên sách, tồn kho và giá tiền
 
-## Expanding the ESLint configuration
+## Vấn đề phát sinh & cách xử lý
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Trong quá trình thực hiện, hệ thống gặp một số lỗi đặc thù do sự thay đổi phiên bản công nghệ:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **Xung đột phiên bản** *(Vite 7 & RTK 2.0)*: 
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+    - **Vấn đề:** Lỗi SyntaxError khi import các kiểu dữ liệu *(PayloadAction, TypedUseSelectorHook)*.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+    - **Xử lý:** Đã nghiên cứu và áp dụng cú pháp import type và phương thức `.withTypes<RootState>()` mới nhất của năm 2026 để đảm bảo tính chặt chẽ của TypeScript.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- **Chuyển đổi thư viện State Management:**
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+    - **Vấn đề:** Gặp lỗi is not a function và undefined khi chuyển đổi từ Zustand sang Redux Toolkit do sự khác biệt về cách dispatch action và quản lý middleware.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+    - **Xử lý:** Đã tái cấu trúc lại toàn bộ "Tầng 3" *(State Management)*, tách biệt rõ ràng giữa Hook điều hướng và Slice lưu trữ dữ liệu.
+
+- **Trải nghiệm người dùng (UI/UX):** 
+
+    - **Vấn đề:** Layout bị co rút *(shrinking)* khi bảng dữ liệu có ít bản ghi *(khi Filter)*, gây mất thẩm mỹ.
+
+    - **Xử lý:** Sử dụng kỹ thuật Dynamic Calculation *(calc(100vh - 140px))* kết hợp Flexbox để ép chiều cao tối thiểu cho khung giao diện, đảm bảo tính ổn định của layout.
+
+- ***Bảo mật SQL (Safe Update Mode):** 
+
+    - **Vấn đề:** Không thể thực hiện lệnh `DELETE` trên MySQL Workbench do chế độ an toàn chặn các truy vấn không sử dụng Primary Key.
+
+    - **Xử lý:** Đã sử dụng `SET SQL_SAFE_UPDATES = 0` để xử lý tạm thời và cấu hình lại Preferences để tối ưu quy trình thao tác dữ liệu mẫu.
+
+- **Kết nối API tính năng Quên mật khẩu (Forgot Password):**
+
+    - **Vấn đề:** Đã hoàn thiện giao diện (UI) cho trang khôi phục mật khẩu. Tuy nhiên, luồng gửi yêu cầu từ Frontend chưa kết nối được với API Backend. Khi thực hiện gửi Email, hệ thống chưa trả về phản hồi hoặc gặp lỗi kết nối (Connection Refused).
+
+    - **Xử lý** Chưa xử lý xong.
+
+    - **Lý do** Đang gặp khó khăn trong việc xác định chính xác cấu trúc dữ liệu mà API yêu cầu (Payload) và chưa cấu hình xong SMTP/Mail Service ở phía Server để kiểm thử luồng gửi mail thực tế.
+ 
+## Kết quả đạt được
+Kết thúc tuần làm việc thứ 02, dự án Book Management System đã đạt được các cột mốc quan trọng sau:
+
+### Về Hệ thống & Kiến trúc
+- Hoàn thiện cấu trúc 5 tầng (5-Layer Architecture): Tổ chức mã nguồn khoa học, tách biệt rõ ràng giữa logic nghiệp vụ (Services), quản lý trạng thái (Redux) và giao diện (UI).
+
+- Chuyển đổi thành công sang Redux Toolkit: Thiết lập Store tập trung cho toàn bộ ứng dụng, giúp quản lý thông tin người dùng và danh sách sách một cách đồng bộ, dễ dàng mở rộng.
+
+### Về Tính năng (Features)
+- Hệ thống xác thực (Authentication): Hoàn thiện luồng Đăng nhập và Đăng xuất. Tích hợp cơ chế bảo vệ Route (Protected Routes), ngăn chặn người dùng chưa đăng nhập truy cập vào trang quản trị.
+
+- Quản lý Kho sách (CRUD Operations):
+
+  - Hiển thị danh sách sách từ API với tốc độ xử lý nhanh.
+
+  - Xây dựng tính năng Tìm kiếm thông minh: Lọc dữ liệu theo tên sách và tác giả với độ trễ cực thấp (gần như tức thì).
+
+  - Hoàn thiện cơ chế tương tác dữ liệu: Thêm, Sửa, Xóa sách thông qua Modal và thông báo (Message) trực quan.
+
+### Về Giao diện & Trải nghiệm (UI/UX)
+- Layout chuyên nghiệp: Sử dụng Ant Design kết hợp Tailwind CSS xây dựng Dashboard chuẩn doanh nghiệp, ổn định về mặt hiển thị (không bị co rút giao diện khi dữ liệu thay đổi).
+
+- Tính ổn định cao: Hệ thống xử lý tốt các trạng thái chờ (Loading) và thông báo lỗi từ Backend, mang lại cảm giác tin cậy cho người dùng.
+
