@@ -17,7 +17,18 @@ const bookSlice = createSlice({
         setLoading: (state, action) => {
             state.loading = action.payload;
         },
-        // Thêm các reducers cho Add, Edit, Delete nếu cần
+        addBook: (state, action: PayloadAction<Book>) => {
+            state.books.unshift(action.payload); // Đẩy lên đầu danh sách cho dễ thấy
+        },
+        updateBook: (state, action: PayloadAction<Book>) => {
+            const index = state.books.findIndex(b => b.id === action.payload.id);
+            if (index !== -1) {
+                state.books[index] = action.payload;
+            }
+        },
+        deleteBook: (state, action: PayloadAction<number | string>) => {
+            state.books = state.books.filter(b => b.id !== action.payload);
+        },
     },
 });
 

@@ -70,8 +70,8 @@ const BookPage: React.FC = () => {
             onEdit={(book) => { setEditingBook(book); setIsModalOpen(true); }}
             onDelete={async (id) => {
                 await bookService.removeBook(id);
-                message.success("Đã xóa!");
-                fetchBooks();
+                dispatch(deleteBook(id));
+                message.success("Đã xóa sách thành công!");
             }}
         />
 
@@ -81,11 +81,16 @@ const BookPage: React.FC = () => {
             loading={loading}
             onCancel={() => setIsModalOpen(false)}
             onSave={async (values) => {
-                if (editingBook) await bookService.editBook(editingBook.id, values);
-                else await bookService.addBook(values);
-                message.success("Thành công!");
+                if (editingBook) {
+                    const updated = await bookService.editBook(editingBook.id, values);
+                    dispatch(updateBook(updated));
+                    message.success("Cập nhật thành công!");
+                } else {
+                    const newBook = await bookService.addBook(values);
+                    dispatch(addBook(newBook));
+                    message.success("Thêm sách mới thành công!");
+                }
                 setIsModalOpen(false);
-                fetchBooks();
             }}
         />
         </Card>
