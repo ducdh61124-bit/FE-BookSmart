@@ -8,6 +8,9 @@ import AuthPage from '../../4th_floor_display/pages/auth/AuthPage';
 import RegisterPage from '../../4th_floor_display/pages/auth/RegisterPage';
 import ForgotPasswordPage from '../../4th_floor_display/pages/auth/ForgotPasswordPage';
 import BookPage from '../../4th_floor_display/pages/books/BookPage';
+import CategoryPage from '../../4th_floor_display/pages/category/CategoryPage';
+import UserPage from '../../4th_floor_display/pages/user/UserPage';
+import HistoryPage from '../../4th_floor_display/pages/history/HistoryPage';
 
 // HÀM BẢO VỆ ROUTE: Nếu chưa login thì đá văng ra /login
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -42,7 +45,9 @@ const AppRoutes: React.FC = () => {
                 {/* Vào / thì tự động nhảy sang /books */}
                 <Route index element={<Navigate to="/books" replace />} />
                 <Route path="books" element={<BookPage />} />
-                {/* Sau này thêm Quản lý User, Category... ở đây */}
+                <Route path="categories" element={<CategoryPage />} />
+                <Route path="users" element={<UserPage />} />
+                <Route path="history" element={<HistoryPage />} />
             </Route>
 
             {/* Bắt link sai: Quay về trang chủ */}

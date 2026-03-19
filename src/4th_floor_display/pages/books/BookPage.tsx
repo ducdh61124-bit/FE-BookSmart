@@ -6,6 +6,7 @@ import type { Book } from '../../../1st_floor_dataAccess/api/endpoints/book.api'
 import { BookTable } from './components/BookTable';
 import { BookFormModal } from './components/BookFormModal';
 import { CustomButton } from '../../components/shared/CustomButton';
+import { useAppDispatch } from '../../../3rd_floor_stateManagement/redux/hooks';
 
 const { Title, Text } = Typography;
 
@@ -15,15 +16,15 @@ const BookPage: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingBook, setEditingBook] = useState<Book | null>(null);
     const [searchText, setSearchText] = useState('');
+    const dispatch = useAppDispatch();
 
     const fetchBooks = async () => {
         setLoading(true);
         try {
             const res = await bookService.getAllBooks();
-            console.log("Data nhận được tại Page:", res);
             setBooks(Array.isArray(res) ? res : []);
         }
-        catch (e: any) { message.error("Lỗi load data rồi!"); }
+        catch (e: any) { message.error("Lỗi load data!"); }
         finally { setLoading(false); }
     };
 
@@ -69,9 +70,13 @@ const BookPage: React.FC = () => {
             loading={loading}
             onEdit={(book) => { setEditingBook(book); setIsModalOpen(true); }}
             onDelete={async (id) => {
-                await bookService.removeBook(id);
-                dispatch(deleteBook(id));
-                message.success("Đã xóa sách thành công!");
+                try {
+                    await bookService.removeBook(id);
+                    message.success("Đã xóa sách thành công!");
+                    fetchBooks();
+                } catch (e) {
+                    message.error("Xóa thất bại!");
+                }
             }}
         />
 
@@ -81,16 +86,22 @@ const BookPage: React.FC = () => {
             loading={loading}
             onCancel={() => setIsModalOpen(false)}
             onSave={async (values) => {
-                if (editingBook) {
-                    const updated = await bookService.editBook(editingBook.id, values);
-                    dispatch(updateBook(updated));
-                    message.success("Cập nhật thành công!");
-                } else {
-                    const newBook = await bookService.addBook(values);
-                    dispatch(addBook(newBook));
-                    message.success("Thêm sách mới thành công!");
+                try {
+                    setLoading(true);
+                    if (editingBook) {
+                        await bookService.editBook(editingBook.id, values);
+                        message.success("Cập nhật thành công!");
+                    } else {
+                        await bookService.addBook(values);
+                        message.success("Thêm sách mới thành công!");
+                    }
+                    setIsModalOpen(false);
+                    fetchBooks();
+                } catch (error: any) {
+                    message.error("Không lưu được sách!");
+                } finally {
+                    setLoading(false);
                 }
-                setIsModalOpen(false);
             }}
         />
         </Card>

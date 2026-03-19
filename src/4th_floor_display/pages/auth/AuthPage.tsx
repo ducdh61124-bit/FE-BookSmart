@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { Form, Input, Checkbox, Typography, message } from 'antd';
+import { Form, Input, Button, Checkbox, Typography, message } from 'antd';
 import { UserOutlined, LockOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../3rd_floor_stateManagement/hooks/useAuth';
 import { CustomButton } from '../../components/shared/CustomButton';
 import { SocialLogin } from './components/SocialLogin';
-import './AuthPage.css';
+import { Link } from 'react-router-dom';
+import { authStyles } from '../../layouts/AuthLayout';
 
 const { Title, Text } = Typography;
 
@@ -24,11 +25,9 @@ const AuthPage: React.FC = () => {
     const onFinish = async (values: any) => {
         try {
             const success = await loginUser(values);
-            console.log("Đăng nhập có thành công không?", success);
 
             if (success) {
                 message.success('Đăng nhập thành công! Đang chuyển hướng...');
-                // Đợi 0.5 giây cho Redux kịp cập nhật rồi mới chuyển trang
                 setTimeout(() => {
                     navigate('/books');
                 }, 500);
@@ -41,50 +40,38 @@ const AuthPage: React.FC = () => {
     };
 
     return (
-        <div className="auth-container">
-            <div className="auth-card">
-                <Title level={2} className="auth-title">LOGIN NOW</Title>
+<>
+            <Title level={2} className={authStyles.title}>LOGIN NOW</Title>
+            <Form form={form} onFinish={onFinish} layout="vertical" initialValues={{ remember: false }}>
+                <Form.Item name="username" rules={[{ required: true, message: 'Nhập Username!' }]}>
+                    <Input className={authStyles.input} prefix={<UserOutlined className="text-[#FFB400]"/>} placeholder="Enter your E-mail" />
+                </Form.Item>
 
-                <Form
-                    form={form}
-                    onFinish={onFinish}
-                    layout="vertical"
-                    initialValues={{ remember: false }}
-                >
-                    <Form.Item name="username" rules={[{ required: true, message: 'Nhập E-mail/Username!' }]}>
-                        <Input className="modern-input" prefix={<UserOutlined style={{color: '#FFB400'}}/>} placeholder="Enter your E-mail" />
+                <Form.Item name="password" rules={[{ required: true, message: 'Nhập Password!' }]}>
+                    <Input.Password className={authStyles.input} prefix={<LockOutlined className="text-[#FFB400]"/>} placeholder="Enter Password" />
+                </Form.Item>
+
+                <div className="flex justify-between items-center mb-6">
+                    <Form.Item name="remember" valuePropName="checked" noStyle>
+                        <Checkbox className="!text-white/60">Remember Me</Checkbox>
                     </Form.Item>
+                    <span className={authStyles.link} onClick={() => navigate('/forgot-password')}>
+                        Forgot Password?
+                    </span>
+                </div>
 
-                    <Form.Item name="password" rules={[{ required: true, message: 'Nhập Password!' }]}>
-                        <Input.Password className="modern-input" prefix={<LockOutlined style={{color: '#FFB400'}}/>} placeholder="Enter Password" />
-                    </Form.Item>
+                <Form.Item>
+                    <CustomButton className={authStyles.goldBtn} htmlType="submit" loading={loading} icon={<ArrowRightOutlined />}>
+                        SIGN IN
+                    </CustomButton>
+                </Form.Item>
 
-                    <div className="flex justify-between items-center mb-6">
-                        <Form.Item name="remember" valuePropName="checked" noStyle>
-                            <Checkbox className="text-gray-300">Remember Me</Checkbox>
-                        </Form.Item>
-                        <Text className="text-yellow-500 cursor-pointer hover:underline" onClick={() => navigate('/forgot-password')}>
-                            Forgot Password?
-                        </Text>
-                    </div>
-
-                    <SocialLogin />
-
-                    <Form.Item className="mt-6">
-                        <CustomButton className="gold-button w-full" htmlType="submit" loading={loading} icon={<ArrowRightOutlined />}>
-                            SIGN IN
-                        </CustomButton>
-                    </Form.Item>
-
-                    <div className="text-center mt-5">
-                        <Text className="text-gray-400">Chưa có tài khoản? </Text>
-                        <Text className="text-yellow-500 cursor-pointer font-bold hover:underline" onClick={() => navigate('/register')}>
-                            Đăng ký ngay
-                        </Text>
-                    </div>
-                </Form>
-            </div>
-        </div>
+                <div className="mt-5">
+                    <span className="text-white/60">Chưa có tài khoản? </span>
+                    <Text className="!text-[#FFB400] cursor-pointer font-bold hover:underline" onClick={() => navigate('/register')}>Đăng ký ngay</Text>
+                </div>
+            </Form>
+        </>
     );
 };
 

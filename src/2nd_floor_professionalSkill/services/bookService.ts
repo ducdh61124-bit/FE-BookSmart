@@ -6,7 +6,6 @@ export const bookService = {
     getAllBooks: async (): Promise<Book[]> => {
         try {
             const response: any = await bookApi.getAll();
-            console.log("Data gốc từ API:", response);
             const finalData = Array.isArray(response) ? response : (response?.data || []);
             return finalData;
         } catch (error: any) {

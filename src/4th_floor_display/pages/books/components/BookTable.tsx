@@ -105,8 +105,9 @@ export const BookTable: React.FC<Props> = ({ data, loading, onEdit, onDelete }) 
             dataSource={Array.isArray(data) ? data : []}
             rowKey="id"
             loading={loading}
+            scroll={{ x: 'max-content', y: 'calc(95vh - 350px)' }}
             pagination={{ pageSize: 8, showSizeChanger: false }}
-            className="border border-gray-100 rounded-lg overflow-hidden"
+            className="border border-gray-100 rounded-lg overflow-hidden [&_.ant-table-body]:!min-h-[calc(95vh-350px)]"
         />
     );
 }

@@ -34,14 +34,24 @@ export const authService = {
         localStorage.removeItem('currentUser');
     },
 
-    // Xử lý logic Quên mật khẩu (Chỉ xóa Token ở Frontend)
+    // Xử lý logic Quên mật khẩu
     forgotPassword: async (email: string) => {
-        return await axiosClient.post('/users/forgot-password', { email });
+        try {
+            const response: any = await authApi.forgotPassword(email);
+            return response.data?.message || "Gửi OTP thành công";
+        } catch (error: any) {
+            throw new Error(error.response?.data || "Lỗi gửi mail");
+        }
     },
 
-    // Gọi API Xác nhận OTP & Đổi mật khẩu
-    resetPassword: async (payload: { email: string, otp: string, newPassword: string }) => {
-        const response = await axiosClient.post('/users/reset-password', payload);
-        return response.data;
+    // Đặt lại mật khẩu
+    resetPassword: async (payload: any) => {
+        try {
+            const response: any = await authApi.resetPassword(payload);
+            return response.data?.message || "Đổi mật khẩu thành công!";
+        } catch (error: any) {
+            const errorMsg = error.response?.data || "Mã OTP không đúng!";
+            throw new Error(errorMsg);
+        }
     }
 };

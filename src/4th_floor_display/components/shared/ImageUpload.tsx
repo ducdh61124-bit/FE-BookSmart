@@ -41,7 +41,7 @@ export const ImageUpload: React.FC<Props> = ({ value, onChange }) => {
             onChange={handleChange}
         >
         {value ? (
-            <img src={value} alt="cover" className="w-full h-full object-cover rounded-lg p-1" />
+            <img src={value} referrerPolicy="no-referrer" alt="cover" className="w-full h-full object-cover rounded-lg p-1" />
         ) : (
             <div className="flex flex-col items-center">
                 {loading ? <LoadingOutlined className="text-blue-500" /> : <PlusOutlined className="text-gray-400 text-lg" />}

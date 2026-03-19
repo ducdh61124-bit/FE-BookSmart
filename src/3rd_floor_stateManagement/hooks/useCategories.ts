@@ -7,7 +7,7 @@ export const useCategories = () => {
     const { categories } = useAppSelector((state) => state.category);
 
     const fetchCategories = async () => {
-        const data = await categoryService.getAll();
+        const data = await categoryService.getAllCategories();
         dispatch(setCategories(data));
     };
 

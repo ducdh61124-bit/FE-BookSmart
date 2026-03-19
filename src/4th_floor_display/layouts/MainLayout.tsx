@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { UserOutlined, BookOutlined, SettingOutlined, LogoutOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
+import { UserOutlined, BookOutlined, SettingOutlined, LogoutOutlined, MenuUnfoldOutlined, MenuFoldOutlined, AppstoreOutlined, HistoryOutlined } from '@ant-design/icons';
 import { Layout, Menu, Avatar, Dropdown, Typography, theme, message, Button, Space } from 'antd';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../3rd_floor_stateManagement/redux/hooks';
@@ -38,7 +38,10 @@ const MainLayout: React.FC = () => {
 
     // 5. Cấu hình Menu
     const menuItems = [
-        { key: '/books', icon: <BookOutlined />, label: 'Quản lý Kho Sách', onClick: () => navigate('/books') }
+        { key: '/books', icon: <BookOutlined style={{ fontSize: '28px' }} />, label: <span className="text-base = 28px"> Quản lý Kho Sách </span>, onClick: () => navigate('/books') },
+        { key: '/categories', icon: <AppstoreOutlined style={{ fontSize: '28px' }} />, label: <span className="text-base = 28px"> Quản lý Danh mục </span>, onClick: () => navigate('/categories') },
+        { key: '/users', icon: <UserOutlined style={{ fontSize: '28px' }} />, label: <span className="text-base = 28px"> Quản lý Người dùng </span>, onClick: () => navigate('/users'),},
+        { key: '/history', icon: <HistoryOutlined style={{ fontSize: '28px' }} />, label: <span className="text-base = 28px"> Lịch sử thay đổi </span>, onClick: () => navigate('/history'),},
     ];
 
     const userMenuItems = [
@@ -50,9 +53,9 @@ const MainLayout: React.FC = () => {
     const displayName = user?.name || user?.user?.name || user?.username || 'Người dùng';
 
     return (
-        <Layout className="min-h-screen">
-            <Sider trigger={null} collapsible collapsed={collapsed} theme="dark" width={300} className="shadow-xl">
-                <div className="h-16 m-4 flex items-center justify-center text-white border-b border-gray-700 pb-2">
+        <Layout className="h-screen overflow-hidden">
+            <Sider trigger={null} collapsible collapsed={collapsed} theme="dark" width={380} className="shadow-xl">
+                <div className="h-10 m-6 flex items-center justify-center text-white border-b border-gray-700 pb-2">
                     <BookOutlined className="text-2xl text-blue-500" />
                     {!collapsed && <span className="ml-3 font-bold text-lg tracking-tight">SMARTBOOK</span>}
                 </div>
@@ -81,7 +84,7 @@ const MainLayout: React.FC = () => {
                     </Space>
                 </Header>
 
-                <Content className="m-6 p-6 rounded-xl shadow-md overflow-auto" style={{ background: colorBgContainer }}>
+                <Content className="p-6 overflow-y-auto" style={{ height: 'calc(100vh - 64px)' }}>
                     <Outlet />
                 </Content>
             </Layout>

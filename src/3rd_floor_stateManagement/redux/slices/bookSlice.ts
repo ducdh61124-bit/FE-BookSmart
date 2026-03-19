@@ -18,7 +18,7 @@ const bookSlice = createSlice({
             state.loading = action.payload;
         },
         addBook: (state, action: PayloadAction<Book>) => {
-            state.books.unshift(action.payload); // Đẩy lên đầu danh sách cho dễ thấy
+            state.books.unshift(action.payload);
         },
         updateBook: (state, action: PayloadAction<Book>) => {
             const index = state.books.findIndex(b => b.id === action.payload.id);

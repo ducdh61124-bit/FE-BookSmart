@@ -3,19 +3,31 @@ import { ENV } from '../../5th_floor_core/core/config/env.config';
 
 // 1. Axios Instance (Khởi tạo máy bơm)
     const axiosClient = axios.create({
-    baseURL: 'http://localhost:8080/api', //URl gốc của backend
+    baseURL: 'http://localhost:8080/api',
     headers: {
         'Content-Type': 'application/json',
     },
-    timeout: 10000, //Thời gian chờ request (10s)
+    timeout: 10000,
 });
 
 // 2. Request Interceptor (Can thiệp trước khi gửi request)
 axiosClient.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('accessToken');
+        const userStr = localStorage.getItem('user');
+        let currentUser = null;
+        if (userStr) {
+            try {
+                const userObj = JSON.parse(userStr);
+                currentUser = userObj.username;
+            } catch (e) {
+            }
+        }
         if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
+        }
+        if (currentUser && config.headers) {
+            config.headers['X-Username'] = currentUser;
         }
         return config;
     },

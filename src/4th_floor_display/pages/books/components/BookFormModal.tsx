@@ -2,6 +2,10 @@ import React, { useEffect } from 'react';
 import { Modal, Form, Input, InputNumber, Row, Col, Divider } from 'antd';
 import type { Book } from '../../../../1st_floor_dataAccess/api/endpoints/book.api';
 import { ImageUpload } from '../../../components/shared/ImageUpload';
+import { Select } from 'antd';
+import { useAppDispatch, useAppSelector } from '../../../../3rd_floor_stateManagement/redux/hooks';
+import { setCategories } from '../../../../3rd_floor_stateManagement/redux/slices/categorySlice';
+import { categoryService } from '../../../../2nd_floor_professionalSkill/services/categoryService';
 
 interface Props {
     open: boolean;
@@ -20,6 +24,16 @@ export const BookFormModal: React.FC<Props> = ({ open, editingBook, onCancel, on
         else form.resetFields();
     }
     }, [open, editingBook, form]);
+
+    const dispatch = useAppDispatch();
+    const { categories = [] } = useAppSelector((state) => state.category);
+    useEffect(() => {
+        if (open && categories && categories.length === 0) {
+            categoryService.getAllCategories()
+                .then(data => dispatch(setCategories(data)))
+                .catch(err => console.error("Lỗi:", err));
+        }
+    }, [open, categories.length, dispatch]);
 
     return (
         <Modal
@@ -48,6 +62,24 @@ export const BookFormModal: React.FC<Props> = ({ open, editingBook, onCancel, on
                         </Form.Item>
                         <Form.Item name="author" label={<span className="font-semibold">Tác giả</span>} rules={[{ required: true }]}>
                             <Input placeholder="Nhập tên tác giả..." className="h-10 rounded-md" />
+                        </Form.Item>
+                        <Form.Item
+                            name={['category', 'id']}
+                            label="Danh mục (Thể loại)"
+                            rules={[{ required: true, message: 'Vui lòng chọn danh mục cho sách!' }]}
+                        >
+                            <Select
+                                placeholder="-- Gõ để tìm hoặc chọn danh mục --"
+                                showSearch
+                                allowClear
+                                filterOption={(input, option) =>
+                                    (option?.label ?? '').toString().toLowerCase().includes(input.toLowerCase())
+                                }
+                                options={categories.map(c => ({
+                                    value: c.id,
+                                    label: c.name
+                                }))}
+                            />
                         </Form.Item>
                     </Col>
                 </Row>

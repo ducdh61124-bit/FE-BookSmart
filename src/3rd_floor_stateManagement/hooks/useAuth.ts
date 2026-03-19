@@ -7,11 +7,11 @@ export const useAuth = () => {
     const [loading, setLoading] = useState(false);
     const dispatch = useAppDispatch();
 
+    // 1. LOGIN
     const loginUser = async (values: any) => {
         setLoading(true);
         try {
             const response = await authService.login(values);
-            console.log("Dữ liệu thực tế từ Backend:", response);
             const token = response?.token || response?.data?.token || response?.accessToken;
             const userData = response?.user || response?.data?.user || response;
 
@@ -30,5 +30,19 @@ export const useAuth = () => {
         }
     };
 
-    return { loginUser, loading };
+    // 2. REGISTER
+    const registerUser = async (values: any) =>{
+        setLoading(true);
+        try{
+            await authService.register(values);
+            return true;
+        } catch (error: any){
+            console.error("Lỗi đăng ký tại Hook:", error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { loginUser, registerUser, loading };
 };

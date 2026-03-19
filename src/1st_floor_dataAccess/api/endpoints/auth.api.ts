@@ -13,8 +13,13 @@ export const authApi = {
         return axiosClient.post('/users/register', data);
     },
 
-    // Quên mật khẩu (Thường gửi email hoặc username lên để lấy lại pass)
-    forgotPassword: (data: { username: string; phone: string; newPassword: string }) => {
-        return axiosClient.post('/users/forgot-password', data);
+    // Quên mật khẩu (Gửi email lên để lấy lại pass)
+    forgotPassword: (email: string) => {
+        return axiosClient.post('/users/forgot-password', { email });
+    },
+
+    // Gửi OTP và mật khẩu mới
+    resetPassword: (payload: any) => {
+        return axiosClient.post('/users/reset-password', payload);
     }
 }
