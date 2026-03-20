@@ -38,7 +38,7 @@ const MainLayout: React.FC = () => {
 
     // 5. Cấu hình Menu
     const menuItems = [
-        { key: '/dashboard', icon: <DashboardOutlined style={{ fontSize: '28px' }} />, label: <span className="text-base = 28px"> Thống kê </span>, onClick: () => navigate('/dashboard'),},
+        { key: '/dashboard', icon: <DashboardOutlined style={{ fontSize: '28px' }} />, label: <span className="text-base = 28px"> Thống kê dữ liệu </span>, onClick: () => navigate('/dashboard'),},
         { key: '/books', icon: <BookOutlined style={{ fontSize: '28px' }} />, label: <span className="text-base = 28px"> Quản lý Kho Sách </span>, onClick: () => navigate('/books') },
         { key: '/categories', icon: <AppstoreOutlined style={{ fontSize: '28px' }} />, label: <span className="text-base = 28px"> Quản lý Danh mục </span>, onClick: () => navigate('/categories') },
         { key: '/users', icon: <UserOutlined style={{ fontSize: '28px' }} />, label: <span className="text-base = 28px"> Quản lý Người dùng </span>, onClick: () => navigate('/users'),},
@@ -46,9 +46,9 @@ const MainLayout: React.FC = () => {
     ];
 
     const userMenuItems = [
-        { key: 'settings', icon: <SettingOutlined />, label: 'Cài đặt tài khoản' },
+        { key: 'settings', icon: <SettingOutlined />, label: 'Cài đặt tài khoản', onClick: (e: any) => { e.domEvent?.preventDefault(); navigate('/settings'); } },
         { type: 'divider' as const },
-        { key: 'logout', icon: <LogoutOutlined />, label: 'Đăng xuất', danger: true, onClick: handleLogout },
+        { key: 'logout', icon: <LogoutOutlined />, label: 'Đăng xuất', danger: true, onClick: handleLogout },,
     ];
 
     const displayName = user?.name || user?.user?.name || user?.username || 'Người dùng';

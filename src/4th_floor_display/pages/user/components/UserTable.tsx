@@ -47,19 +47,6 @@ export const UserTable: React.FC<Props> = ({ data, loading, onEdit, onDelete }) 
             dataIndex: 'phone',
             key: 'phone',
         },
-        {
-            title: 'Thao tác',
-            key: 'action',
-            align: 'center',
-            render: (_, record) => (
-                <Space size="middle">
-                    <Button type="link" icon={<EditOutlined />} onClick={() => onEdit(record)}>Sửa</Button>
-                    <Popconfirm title="Xác nhận xóa người dùng này?" onConfirm={() => onDelete(record.id)}>
-                        <Button type="link" danger icon={<DeleteOutlined />}>Xóa</Button>
-                    </Popconfirm>
-                </Space>
-            ),
-        },
     ];
 
     return (

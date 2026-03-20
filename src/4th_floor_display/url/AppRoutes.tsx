@@ -12,6 +12,7 @@ import CategoryPage from '../../4th_floor_display/pages/category/CategoryPage';
 import UserPage from '../../4th_floor_display/pages/user/UserPage';
 import HistoryPage from '../../4th_floor_display/pages/history/HistoryPage';
 import DashboardPage from '../../4th_floor_display/pages/dashboard/DashboardPage';
+import SettingPage from '../../4th_floor_display/pages/setting/SettingPage';
 
 // HÀM BẢO VỆ ROUTE: Nếu chưa login thì đá văng ra /login
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -48,6 +49,7 @@ const AppRoutes: React.FC = () => {
                 <Route path="users" element={<UserPage />} />
                 <Route path="history" element={<HistoryPage />} />
                 <Route path="dashboard" element={<DashboardPage/>}/>
+                <Route path="/settings" element={<SettingPage />} />
             </Route>
 
             {/* Bắt link sai: Quay về trang chủ */}
