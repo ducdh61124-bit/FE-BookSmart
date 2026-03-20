@@ -11,12 +11,11 @@ import BookPage from '../../4th_floor_display/pages/books/BookPage';
 import CategoryPage from '../../4th_floor_display/pages/category/CategoryPage';
 import UserPage from '../../4th_floor_display/pages/user/UserPage';
 import HistoryPage from '../../4th_floor_display/pages/history/HistoryPage';
+import DashboardPage from '../../4th_floor_display/pages/dashboard/DashboardPage';
 
 // HÀM BẢO VỆ ROUTE: Nếu chưa login thì đá văng ra /login
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
-
-    // Nếu không có token hoặc chưa login, bắt về login ngay
     if (!isAuthenticated) {
         return <Navigate to="/login" replace />;
     }
@@ -48,6 +47,7 @@ const AppRoutes: React.FC = () => {
                 <Route path="categories" element={<CategoryPage />} />
                 <Route path="users" element={<UserPage />} />
                 <Route path="history" element={<HistoryPage />} />
+                <Route path="dashboard" element={<DashboardPage/>}/>
             </Route>
 
             {/* Bắt link sai: Quay về trang chủ */}

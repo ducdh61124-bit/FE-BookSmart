@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { UserOutlined, BookOutlined, SettingOutlined, LogoutOutlined, MenuUnfoldOutlined, MenuFoldOutlined, AppstoreOutlined, HistoryOutlined } from '@ant-design/icons';
+import { UserOutlined, BookOutlined, SettingOutlined, LogoutOutlined, MenuUnfoldOutlined, MenuFoldOutlined, AppstoreOutlined, HistoryOutlined, DashboardOutlined  } from '@ant-design/icons';
 import { Layout, Menu, Avatar, Dropdown, Typography, theme, message, Button, Space } from 'antd';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../3rd_floor_stateManagement/redux/hooks';
@@ -38,6 +38,7 @@ const MainLayout: React.FC = () => {
 
     // 5. Cấu hình Menu
     const menuItems = [
+        { key: '/dashboard', icon: <DashboardOutlined style={{ fontSize: '28px' }} />, label: <span className="text-base = 28px"> Thống kê </span>, onClick: () => navigate('/dashboard'),},
         { key: '/books', icon: <BookOutlined style={{ fontSize: '28px' }} />, label: <span className="text-base = 28px"> Quản lý Kho Sách </span>, onClick: () => navigate('/books') },
         { key: '/categories', icon: <AppstoreOutlined style={{ fontSize: '28px' }} />, label: <span className="text-base = 28px"> Quản lý Danh mục </span>, onClick: () => navigate('/categories') },
         { key: '/users', icon: <UserOutlined style={{ fontSize: '28px' }} />, label: <span className="text-base = 28px"> Quản lý Người dùng </span>, onClick: () => navigate('/users'),},
