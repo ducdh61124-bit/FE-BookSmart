@@ -1,6 +1,5 @@
-# Project Book Management Tuần 2 (React + TypeScript + Ant Design + TailwindCSS)
+# Project Book Management 
 
-Tài liệu này tổng hợp rõ ràng những gì đã học và đã làm trong project, các lỗi thường gặp khi làm bài, và cách khắc phục.
 
 ## Cấu trúc 5 tầng: 
 
@@ -12,69 +11,95 @@ Tài liệu này tổng hợp rõ ràng những gì đã học và đã làm tro
 
 ## Chức năng:
 
-- Đăng nhập, đăng ký.
+- Đăng nhập, đăng ký, quên mật khẩu.
 - Xem, thêm, sửa, xóa sách.
 - Tìm kiếm theo tên sách.
 - Tìm kiếm sách theo tác giả, thể loại.
 - Sắp xếp sách theo tên sách, tồn kho và giá tiền
+- Xem, thêm, sửa, xóa thể loại.
+- Xem, sửa danh sách người dùng
+- Tự xóa người dùng
+- Lịch sử log
+- Thống kê
 
-## Vấn đề phát sinh & cách xử lý
+## Setup môi trường FE
 
-Trong quá trình thực hiện, hệ thống gặp một số lỗi đặc thù do sự thay đổi phiên bản công nghệ:
+- **Công nghệ dự án:** 
 
-- **Xung đột phiên bản** *(Vite 7 & RTK 2.0)*: 
+    - **Vite + React + TypeScript *(package.json)***
+    - **UI:** Ant Design, chart: Recharts
+    - **HTTP:** Axios
+    - **state:** Redux Toolkit + React-Redux
+    - **styling:** TailwindCSS.
 
-    - **Vấn đề:** Lỗi SyntaxError khi import các kiểu dữ liệu *(PayloadAction, TypedUseSelectorHook)*.
+- **Yêu cầu môi trường:**
+    
+    - **Node.js:** dự án chạy tốt với Node hiện tại đang dùng trong môi trường kiểm tra là v24.11.0.
 
-    - **Xử lý:** Đã nghiên cứu và áp dụng cú pháp import type và phương thức `.withTypes<RootState>()` mới nhất của năm 2026 để đảm bảo tính chặt chẽ của TypeScript.
+    - **Package manager:** dự án đang cấu hình script theo chuẩn npm.
 
-- **Chuyển đổi thư viện State Management:**
+- **Cài đặt dependencies:** ` npm install `
 
-    - **Vấn đề:** Gặp lỗi is not a function và undefined khi chuyển đổi từ Zustand sang Redux Toolkit do sự khác biệt về cách dispatch action và quản lý middleware.
+- **Scripts chính:** `npm run dev` *(chạy development)*
 
-    - **Xử lý:** Đã tái cấu trúc lại toàn bộ "Tầng 3" *(State Management)*, tách biệt rõ ràng giữa Hook điều hướng và Slice lưu trữ dữ liệu.
+## Component đơn giản 
 
-- **Trải nghiệm người dùng (UI/UX):** 
+- **Mapping theo kiến trúc dự án *(để thao tác component/feature tương đương)*:**
 
-    - **Vấn đề:** Layout bị co rút *(shrinking)* khi bảng dữ liệu có ít bản ghi *(khi Filter)*, gây mất thẩm mỹ.
+    - **Component dùng chung:** `src/4th_floor_display/components/shared/` *(ví dụ: CustomButton.tsx, ImageUpload.tsx)*.
 
-    - **Xử lý:** Sử dụng kỹ thuật Dynamic Calculation *(calc(100vh - 140px))* kết hợp Flexbox để ép chiều cao tối thiểu cho khung giao diện, đảm bảo tính ổn định của layout.
+    - **Feature theo nghĩa module trang:** `src/4th_floor_display/pages/*` *(auth/books/category/user/history/dashboard/setting)*.
 
-- ***Bảo mật SQL (Safe Update Mode):** 
+- **Kết quả đọc rà soát mẫu:**
 
-    - **Vấn đề:** Không thể thực hiện lệnh `DELETE` trên MySQL Workbench do chế độ an toàn chặn các truy vấn không sử dụng Primary Key.
+    - `CustomButton.tsx`: wrapper antd/Button nhằm đồng bộ style UI.
 
-    - **Xử lý:** Đã sử dụng `SET SQL_SAFE_UPDATES = 0` để xử lý tạm thời và cấu hình lại Preferences để tối ưu quy trình thao tác dữ liệu mẫu.
+    - `AuthPage.tsx`: form login + “remember email” + gọi hook useAuth.
 
-- **Kết nối API tính năng Quên mật khẩu (Forgot Password):**
+    - `BookPage.tsx`: hiển thị danh sách sách + modal CRUD + search local.
 
-    - **Vấn đề:** Đã hoàn thiện giao diện (UI) cho trang khôi phục mật khẩu. Tuy nhiên, luồng gửi yêu cầu từ Frontend chưa kết nối được với API Backend. Khi thực hiện gửi Email, hệ thống chưa trả về phản hồi hoặc gặp lỗi kết nối (Connection Refused).
+### Tổ chức Redux store, actions, reducers
 
-    - **Xử lý** Chưa xử lý xong.
+- **Store:** `src/3rd_floor_stateManagement/redux/store.ts`
 
-    - **Lý do** Đang gặp khó khăn trong việc xác định chính xác cấu trúc dữ liệu mà API yêu cầu (Payload) và chưa cấu hình xong SMTP/Mail Service ở phía Server để kiểm thử luồng gửi mail thực tế.
- 
-## Kết quả đạt được
-Kết thúc tuần làm việc thứ 02, dự án Book Management System đã đạt được các cột mốc quan trọng sau:
+    - `configureStore` với 4 slice reducers: `auth`, `book`, `category`, `user`.
 
-### Về Hệ thống & Kiến trúc
-- Hoàn thiện cấu trúc 5 tầng (5-Layer Architecture): Tổ chức mã nguồn khoa học, tách biệt rõ ràng giữa logic nghiệp vụ (Services), quản lý trạng thái (Redux) và giao diện (UI).
+    - Có type `RootState`, `AppDispatch` phục vụ typing.
 
-- Chuyển đổi thành công sang Redux Toolkit: Thiết lập Store tập trung cho toàn bộ ứng dụng, giúp quản lý thông tin người dùng và danh sách sách một cách đồng bộ, dễ dàng mở rộng.
+- **Typed hooks chuẩn RTK/React-Redux:** `src/3rd_floor_stateManagement/redux/hooks.ts`
 
-### Về Tính năng (Features)
-- Hệ thống xác thực (Authentication): Hoàn thiện luồng Đăng nhập và Đăng xuất. Tích hợp cơ chế bảo vệ Route (Protected Routes), ngăn chặn người dùng chưa đăng nhập truy cập vào trang quản trị.
+    - Dùng API `.withTypes<>()` cho `useDispatch/useSelector`.
 
-- Quản lý Kho sách (CRUD Operations):
+- **Slices (actions + reducers):** `src/3rd_floor_stateManagement/redux/slices/*.ts`
 
-  - Hiển thị danh sách sách từ API với tốc độ xử lý nhanh.
+    - `authSlice.ts`: quản lý `user`, `isAuthenticated`; actions `setCredentials`, `logout`.
 
-  - Xây dựng tính năng Tìm kiếm thông minh: Lọc dữ liệu theo tên sách và tác giả với độ trễ cực thấp (gần như tức thì).
+    - `bookSlice.ts`: quản lý `books`, `loading`; có reducers thêm/sửa/xóa, nhưng hiện export actions đang giới hạn ở `setBooks`, `setLoading`.
 
-  - Hoàn thiện cơ chế tương tác dữ liệu: Thêm, Sửa, Xóa sách thông qua Modal và thông báo (Message) trực quan.
+- **Hooks thao tác nghiệp vụ trên state:** `src/3rd_floor_stateManagement/hooks/*`
 
-### Về Giao diện & Trải nghiệm (UI/UX)
-- Layout chuyên nghiệp: Sử dụng Ant Design kết hợp Tailwind CSS xây dựng Dashboard chuẩn doanh nghiệp, ổn định về mặt hiển thị (không bị co rút giao diện khi dữ liệu thay đổi).
+    - Ví dụ `useAuth.ts`: gọi `authService`, dispatch `setCredentials`, lưu token/user vào localStorage.
 
-- Tính ổn định cao: Hệ thống xử lý tốt các trạng thái chờ (Loading) và thông báo lỗi từ Backend, mang lại cảm giác tin cậy cho người dùng.
+    - Ví dụ `useBooks.ts`: fetch qua service rồi dispatch vào slice.
+
+## Gọi API
+
+- **Vị trí tương đương trong dự án:**
+
+    - **API layer:** `src/1st_floor_dataAccess/api/`
+
+        - **`axiosClient.ts`:** tạo axios instance, interceptors request/response.
+
+        - **`endpoints/*.api.ts`:** gom các hàm gọi API theo domain *(auth/book/category/user/history/dashboard)*.
+
+    - **Config/Constants:**
+
+        - **`src/5th_floor_core/core/config/env.config.ts`:** đọc VITE_API_BASE_URL và fallback.
+
+        - **`src/5th_floor_core/core/constants/app.constant.ts`:** `API_BASE_URL` và cấu hình mặc định.
+
+- **Cách gọi API thực tế:**
+
+    - UI/Hook → **Service layer** *(2nd_floor_professionalSkill/services/*)* → **Endpoint layer** *(1st_floor_dataAccess/api/endpoints/*)* → **axiosClient**.
+
 
